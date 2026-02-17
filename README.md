@@ -102,4 +102,4 @@ NEXUS.AI splits its intelligence into four distinct modules:
 2. **ML Classification**: Uses XGBoost and Random Forest ensembles to flag anomalies.
 3. **Cross-Layer Fusion**: Connects isolated alerts into cohesive attack narratives.
 4. **Explainability Module**: Generates human-readable summaries and defensive playbooks.
----
+---  
