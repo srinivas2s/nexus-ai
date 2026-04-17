@@ -191,22 +191,30 @@ body::before {
 /* =================== INPUT =================== */
 .nexus-input {
   width: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid var(--border);
-  padding: 18px 18px 18px 52px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
-  font-size: 0.9rem;
+  padding: 16px 20px 16px 52px;
+  color: #fff;
+  font-size: 0.85rem;
   outline: none;
   transition: all 0.3s;
-  backdrop-filter: blur(10px);
 }
 
 .nexus-input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.08), 0 0 40px rgba(0, 212, 255, 0.03);
-  background: rgba(0, 212, 255, 0.02);
+  background: rgba(245, 197, 66, 0.04);
+  box-shadow: 0 0 20px rgba(245, 197, 66, 0.05);
+}
+
+/* Fix for browser autocomplete white background */
+.nexus-input:-webkit-autofill,
+.nexus-input:-webkit-autofill:hover, 
+.nexus-input:-webkit-autofill:focus, 
+.nexus-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #080808 inset !important;
+  -webkit-text-fill-color: #fff !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 .nexus-input::placeholder { color: var(--text-muted); }
@@ -361,6 +369,33 @@ body::before {
 @keyframes loadingBar {
   0% { width: 0%; }
   100% { width: 100%; }
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg, 
+    rgba(255, 255, 255, 0.03) 25%, 
+    rgba(245, 197, 66, 0.05) 37%, 
+    rgba(255, 255, 255, 0.03) 63%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 2s infinite linear;
+  border-radius: 8px;
+}
+
+.skeleton-card {
+  width: 100%;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
 }
 
 @keyframes glitch {

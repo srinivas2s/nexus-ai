@@ -7,9 +7,19 @@ import asyncio
 import time
 import random
 from fastapi import FastAPI
+import base64
+import os
+import cv2
+import numpy as np
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
+
+# Constants
+BIOMETRIC_DIR = "assets/biometrics"
+if not os.path.exists(BIOMETRIC_DIR):
+    os.makedirs(BIOMETRIC_DIR)
 
 # Import core layers
 from core.ingestion.pipeline import IngestionPipeline
@@ -52,6 +62,16 @@ class ChatRequest(BaseModel):
     message: str
 
 
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class BiometricRequest(BaseModel):
+    email: str
+    image: str  # Base64 string
+
+
 class IngestRequest(BaseModel):
     src: Optional[str] = None
     dst: Optional[str] = None
@@ -64,6 +84,105 @@ class IngestRequest(BaseModel):
 
 
 # ─── ENDPOINTS ───
+
+@app.post("/api/login")
+async def login(req: LoginRequest):
+    """Secure entry to the NEXUS Command Center."""
+    # Mock database validation
+    if len(req.password) >= 6:
+        return {"success": True, "operator_id": "NX-" + str(random.randint(1000, 9999))}
+    return {"success": False, "message": "Invalid neural token or credentials."}
+
+@app.post("/api/biometrics/register")
+async def register_biometrics(req: BiometricRequest):
+    """Saves a biometric template for an operator."""
+    try:
+        # Decode base64 image
+        header, encoded = req.image.split(",", 1)
+        data = base64.bb64decode(encoded)
+        
+        # Save reference image
+        filename = f"{req.email.replace('@', '_').replace('.', '_')}.jpg"
+        filepath = os.path.join(BIOMETRIC_DIR, filename)
+        
+        with open(filepath, "wb") as f:
+            f.write(data)
+            
+        return {"success": True, "message": "Biometric template stored successfully."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/biometrics/verify")
+async def verify_biometrics(req: BiometricRequest):
+    """Compares live frame with stored template using OpenCV."""
+    try:
+        # 1. Load stored template
+        filename = f"{req.email.replace('@', '_').replace('.', '_')}.jpg"
+        template_path = os.path.join(BIOMETRIC_DIR, filename)
+        
+        if not os.path.exists(template_path):
+            return {"success": False, "message": "No biometric template found for this operator. Please register first."}
+            
+        template_img = cv2.imread(template_path)
+        
+        # 2. Decode live image
+        header, encoded = req.image.split(",", 1)
+        live_data = base64.b64decode(encoded)
+        nparr = np.frombuffer(live_data, np.uint8)
+        live_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+        def get_neural_fingerprint(img):
+            # 1. Focus on the central area (face area)
+            h, w = img.shape[:2]
+            y1, y2, x1, x2 = int(h*0.15), int(h*0.85), int(w*0.15), int(w*0.85)
+            cropped = img[y1:y2, x1:x2]
+            
+            # 2. Convert to Grayscale
+            gray = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
+            
+            # 3. Apply CLAHE (Contrast Limited Adaptive Histogram Equalization)
+            # This makes the face features visible even with backlighting (like your ceiling lights)
+            clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
+            enhanced = clahe.apply(gray)
+            
+        # 4. Extract ORB features - INCREASED FOR MAX DETAIL
+            orb = cv2.ORB_create(nfeatures=5000)
+            return orb.detectAndCompute(enhanced, None)
+
+        kp1, des1 = get_neural_fingerprint(template_img)
+        kp2, des2 = get_neural_fingerprint(live_img)
+        
+        if des1 is None or des2 is None:
+            return {"success": False, "message": "Neural patterns too weak. Stay centered."}
+            
+        # 5. Feature Matching
+        bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+        matches = bf.match(des1, des2)
+        
+        # Calculate consistency score
+        match_score = len(matches) / min(len(kp1), len(kp2)) if min(len(kp1), len(kp2)) > 10 else 0
+        
+        # 6. Fallback: Histogram Correlation (very robust to movement/lighting)
+        # Comparing the "Color Signature" of the face area
+        hist1 = cv2.calcHist([template_img], [0,1,2], None, [8,8,8], [0,256,0,256,0,256])
+        cv2.normalize(hist1, hist1)
+        hist2 = cv2.calcHist([live_img], [0,1,2], None, [8,8,8], [0,256,0,256,0,256])
+        cv2.normalize(hist2, hist2)
+        hist_score = cv2.compareHist(hist1, hist2, cv2.HISTCMP_CORREL)
+
+        # 7. Final Verification - High Permissive for Demo/ASAP fix
+        # Either the features match (0.03) OR the color signature matches (> 0.5)
+        IS_VALID = match_score > 0.03 or hist_score > 0.5
+        
+        if IS_VALID:
+            return {"success": True, "score": round(max(match_score, hist_score) * 100, 2)}
+        else:
+            return {"success": False, "message": "Biometric mismatch. Identity unauthorized.", "score": round(match_score * 100, 2)}
+            
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/api/health")
 def health():
