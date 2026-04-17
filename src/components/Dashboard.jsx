@@ -82,7 +82,7 @@ export default function Dashboard({ user, onLogout }) {
   ];
 
   return (
-    <div className="scanline grid-bg" style={{ display: 'flex', height: '100vh', overflow: 'hidden', color: '#fff', background: '#000' }}>
+    <div className="scanline grid-bg" style={{ display: 'flex', height: '100vh', overflow: 'hidden', color: '#fff', background: 'transparent' }}>
       
       {/* SIDEBAR */}
       <aside style={{

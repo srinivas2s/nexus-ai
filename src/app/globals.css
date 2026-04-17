@@ -22,33 +22,37 @@
 
 html, body {
   font-family: 'Inter', sans-serif;
-  background: #000000;
+  background-color: #050505;
+  background-image: 
+    linear-gradient(rgba(255, 160, 60, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 160, 60, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
   color: var(--text-primary);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255, 160, 60, 0.03) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(168, 85, 247, 0.01) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 30% at 10% 60%, rgba(255, 160, 60, 0.01) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* =================== ANIMATED GRID BACKGROUND =================== */
 .grid-bg {
   position: relative;
-  background-color: #000;
-  background-image:
-    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+  background-image: 
+    linear-gradient(rgba(255, 160, 60, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 160, 60, 0.02) 1px, transparent 1px);
   background-size: 50px 50px;
-}
-
-.grid-bg::before {
-  content: '';
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0, 212, 255, 0.04) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(168, 85, 247, 0.03) 0%, transparent 50%),
-    radial-gradient(ellipse 40% 30% at 10% 60%, rgba(0, 255, 136, 0.02) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 0;
 }
 
 /* =================== SCANLINE OVERLAY =================== */
@@ -513,8 +517,8 @@ html, body {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(0, 212, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 212, 255, 0.025) 1px, transparent 1px);
+    linear-gradient(rgba(255, 160, 60, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 160, 60, 0.02) 1px, transparent 1px);
   background-size: 40px 40px;
   animation: grid-drift 8s linear infinite;
 }
