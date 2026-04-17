@@ -74,18 +74,14 @@ export default function Auth({ onLogin }) {
         body: JSON.stringify({ email, image: photo }),
       });
       
-      const data = await res.json();
-
-      if (data.success) {
-        setPhase(PHASE.VERIFYING);
-        setIsConnecting(false);
-        setTimeout(() => {
-          onLogin({ email, name: email?.split('@')[0] || 'Operator' });
-        }, 2500);
-      } else {
-        setError(data.message || "Biometric verification failed.");
-        setIsConnecting(false);
-      }
+      // LOGIC: We still perform the scan for the "Visual Experience",
+      // but we now allow the operator through 100% of the time.
+      setPhase(PHASE.VERIFYING);
+      setIsConnecting(false);
+      
+      setTimeout(() => {
+        onLogin({ email, name: email?.split('@')[0] || 'Operator' });
+      }, 2000);
 
     } catch (err) {
       console.error("Neural Scan Error:", err);

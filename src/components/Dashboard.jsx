@@ -26,20 +26,22 @@ export default function Dashboard({ user, onLogout }) {
   const [stats, setStats] = useState(null);
   const [threats, setThreats] = useState([]);
   const [simulating, setSimulating] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const init = async () => {
+      await Promise.all([fetchHealth(), fetchStats(), fetchThreats()]);
+      setTimeout(() => setLoading(false), 2000); // Artificial delay for premium feel
+    };
+    init();
+
     const tick = () => setTime(new Date().toLocaleTimeString('en-US', { hour12: false }));
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, []);
 
-  // Fetch health + stats on mount
-  useEffect(() => {
-    fetchHealth();
-    fetchStats();
-    fetchThreats();
-  }, []);
+
 
   const fetchHealth = async () => {
     try {
@@ -229,8 +231,8 @@ export default function Dashboard({ user, onLogout }) {
             <span style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.08)', margin: '0 4px' }}>|</span>
             <span style={{
               fontFamily: 'JetBrains Mono, monospace',
-              fontSize: '0.7rem', color: '#00d4ff', fontWeight: 500,
-              textShadow: '0 0 12px rgba(0,212,255,0.3)',
+              fontSize: '0.7rem', color: 'var(--accent)', fontWeight: 500,
+              textShadow: '0 0 12px rgba(245,197,66,0.2)',
             }}>{time}</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -278,28 +280,62 @@ export default function Dashboard({ user, onLogout }) {
 
         <div style={{ flex: 1, overflowY: 'auto', padding: '32px 36px' }}>
           <AnimatePresence mode="wait">
-            {activeTab === 'overview' && <OverviewTab key="ov" stats={stats} threats={threats} />}
-            {activeTab === 'threats' && <OverviewTab key="th" stats={stats} threats={threats} />}
-            {activeTab === 'nexus-ai' && (
-              <motion.div key="ai" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ height: '100%' }}>
-                <AIChat />
+            {loading ? (
+              <motion.div 
+                key="skeleton"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                style={{ display: 'flex', flexDirection: 'column', gap: 32 }}
+              >
+                {/* Header Skeleton */}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+                  <div className="skeleton" style={{ width: 400, height: 48 }} />
+                  <div className="skeleton" style={{ width: 300, height: 12 }} />
+                </div>
+
+                {/* Stats Grid Skeleton */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
+                  {[1,2,3,4].map(i => (
+                    <div key={i} className="skeleton-card" style={{ height: 120 }}>
+                      <div className="skeleton" style={{ margin: 20, width: '40%', height: 14 }} />
+                      <div className="skeleton" style={{ margin: '0 20px', width: '60%', height: 28 }} />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Main View Skeletons */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 32 }}>
+                   <div className="skeleton-card" style={{ height: 400 }} />
+                   <div className="skeleton-card" style={{ height: 400 }} />
+                </div>
               </motion.div>
-            )}
-            {activeTab === 'settings' && (
-              <motion.div key="st" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{
-                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: 16,
-              }}>
-                <Settings size={32} color="rgba(255,255,255,0.1)" />
-                <p style={{
-                  fontSize: '0.7rem', color: 'rgba(255,255,255,0.2)',
-                  letterSpacing: '0.3em', textTransform: 'uppercase',
-                  fontFamily: 'Orbitron, sans-serif',
-                }}>Configuration Module</p>
-                <p style={{
-                  fontSize: '0.6rem', color: 'rgba(255,255,255,0.1)',
-                  letterSpacing: '0.15em',
-                }}>Coming Soon</p>
-              </motion.div>
+            ) : (
+              <>
+                {activeTab === 'overview' && <OverviewTab key="ov" stats={stats} threats={threats} />}
+                {activeTab === 'threats' && <OverviewTab key="th" stats={stats} threats={threats} />}
+                {activeTab === 'nexus-ai' && (
+                  <motion.div key="ai" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ height: '100%' }}>
+                    <AIChat />
+                  </motion.div>
+                )}
+                {activeTab === 'settings' && (
+                  <motion.div key="st" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: 16,
+                  }}>
+                    <Settings size={32} color="rgba(245,197,66,0.1)" />
+                    <p style={{
+                      fontSize: '0.7rem', color: 'rgba(255,255,255,0.2)',
+                      letterSpacing: '0.3em', textTransform: 'uppercase',
+                      fontFamily: 'Orbitron, sans-serif',
+                    }}>Configuration Module</p>
+                    <p style={{
+                      fontSize: '0.6rem', color: 'rgba(245,197,66,0.2)',
+                      letterSpacing: '0.15em',
+                    }}>Coming Soon</p>
+                  </motion.div>
+                )}
+              </>
             )}
           </AnimatePresence>
         </div>
@@ -310,10 +346,10 @@ export default function Dashboard({ user, onLogout }) {
 
 function OverviewTab({ stats, threats }) {
   const statCards = [
-    { label: "Data Throughput", value: stats?.throughput || "—", trend: `${stats?.events_per_sec || 0} evt/s`, icon: Activity, layer: "L1", color: "#00d4ff" },
-    { label: "Anomaly Count", value: String(stats?.anomaly_count || 0), trend: "Total", icon: AlertTriangle, layer: "L2", color: "#a855f7" },
-    { label: "Verified Threats", value: String(stats?.genuine_threats || 0), trend: "Genuine", icon: CheckCircle, layer: "L3", color: "#ff3b5c" },
-    { label: "False Positives", value: String(stats?.false_positives || 0), trend: "Filtered", icon: XCircle, layer: "L4", color: "#00ff88" },
+    { label: "Data Throughput", value: stats?.throughput || "—", trend: `${stats?.events_per_sec || 0} evt/s`, icon: Activity, layer: "L1", color: "#f5c542" },
+    { label: "Anomaly Count", value: String(stats?.anomaly_count || 0), trend: "Total", icon: AlertTriangle, layer: "L2", color: "#ffa600" },
+    { label: "Verified Threats", value: String(stats?.genuine_threats || 0), trend: "Genuine", icon: CheckCircle, layer: "L3", color: "#ff8400" },
+    { label: "False Positives", value: String(stats?.false_positives || 0), trend: "Filtered", icon: XCircle, layer: "L4", color: "#ff9d00" },
   ];
 
   return (
@@ -323,7 +359,7 @@ function OverviewTab({ stats, threats }) {
           fontFamily: 'Orbitron, sans-serif', fontWeight: 800,
           fontSize: '2rem', color: '#fff', letterSpacing: '0.02em', marginBottom: 10,
         }}>
-          AI-Driven <span style={{ color: '#00d4ff', textShadow: '0 0 20px rgba(0,212,255,0.3)' }}>Threat Detection</span> & Simulation
+          AI-Driven <span style={{ color: 'var(--accent)', textShadow: '0 0 20px rgba(245,197,66,0.3)' }}>Threat Detection</span> & Simulation
         </h1>
         <p style={{
           fontSize: '0.65rem', color: 'rgba(255,255,255,0.25)',
