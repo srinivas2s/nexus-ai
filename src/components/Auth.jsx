@@ -9,10 +9,10 @@ export default function Auth({ onLogin }) {
   const [particles, setParticles] = useState([]);
 
   const layers = [
-    { icon: Layers, label: "INGEST", desc: "Data Normalization", color: "#00d4ff" },
-    { icon: Cpu, label: "DETECT", desc: "ML Classification", color: "#a855f7" },
-    { icon: GitBranch, label: "CORRELATE", desc: "Event Fusion", color: "#00ff88" },
-    { icon: FileText, label: "OUTPUT", desc: "SOC Explainability", color: "var(--orange)" },
+    { icon: Layers, label: "INGEST", desc: "Data Normalization", color: "#f5c542" },
+    { icon: Cpu, label: "DETECT", desc: "ML Classification", color: "#ffa600" },
+    { icon: GitBranch, label: "CORRELATE", desc: "Event Fusion", color: "#ff8400" },
+    { icon: FileText, label: "OUTPUT", desc: "SOC Explainability", color: "#ff9d00" },
   ];
 
   // Floating particles
@@ -49,12 +49,12 @@ export default function Auth({ onLogin }) {
           position: 'fixed',
           left: `${p.x}%`, top: `${p.y}%`,
           width: p.size, height: p.size,
-          background: '#00d4ff',
+          background: 'var(--accent)',
           borderRadius: '50%',
           opacity: p.opacity,
           animation: `float ${p.dur}s ease-in-out ${p.delay}s infinite`,
           pointerEvents: 'none', zIndex: 0,
-          boxShadow: '0 0 6px rgba(0,212,255,0.15)',
+          boxShadow: '0 0 6px var(--accent-glow)',
         }} />
       ))}
 
@@ -81,25 +81,25 @@ export default function Auth({ onLogin }) {
         <motion.div
           className="float-animation"
           style={{
-            width: 80, height: 80,
-            border: '1px solid rgba(0,212,255,0.15)',
+            width: 120, height: 120,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            borderRadius: 20, marginBottom: 28,
-            background: 'rgba(0,212,255,0.02)',
-            animation: 'float 4s ease-in-out infinite, glow-border 3s ease-in-out infinite',
-            boxShadow: '0 0 40px rgba(0,212,255,0.05)',
+            marginBottom: 32,
+            animation: 'float 4s ease-in-out infinite',
           }}
         >
-          <img src="/icon.png" alt="Nexus AI" style={{ width: '70%', height: '70%', objectFit: 'contain' }} />
+          <img src="/icon.png" alt="Nexus AI" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
         </motion.div>
 
         <h1 style={{
           fontFamily: 'Orbitron, sans-serif',
           fontWeight: 900, fontSize: '2.6rem',
-          color: '#fff', letterSpacing: '0.05em',
+          letterSpacing: '0.05em',
           marginBottom: 8,
+          background: 'linear-gradient(to bottom, #f5c542, #b08d26)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
         }}>
-          NEXUS<span style={{ color: 'var(--orange)' }}>.AI</span>
+          NEXUS.AI
         </h1>
         <p style={{
           fontSize: '0.65rem',
@@ -149,7 +149,7 @@ export default function Auth({ onLogin }) {
               <label style={{
                 display: 'flex', alignItems: 'center', gap: 8,
                 fontSize: '0.6rem', fontWeight: 600,
-                color: '#00d4ff', letterSpacing: '0.2em',
+                color: 'var(--accent)', letterSpacing: '0.2em',
                 textTransform: 'uppercase', marginBottom: 12, marginLeft: 4,
                 fontFamily: 'Orbitron, sans-serif',
               }}>
@@ -171,7 +171,7 @@ export default function Auth({ onLogin }) {
               <label style={{
                 display: 'flex', alignItems: 'center', gap: 8,
                 fontSize: '0.6rem', fontWeight: 600,
-                color: '#00d4ff', letterSpacing: '0.2em',
+                color: 'var(--accent)', letterSpacing: '0.2em',
                 textTransform: 'uppercase', marginBottom: 12, marginLeft: 4,
                 fontFamily: 'Orbitron, sans-serif',
               }}>
@@ -207,14 +207,14 @@ export default function Auth({ onLogin }) {
 
         {/* Footer info */}
         <div style={{ marginTop: 36, display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div style={{ height: 1, width: 50, background: 'linear-gradient(90deg, transparent, rgba(0,212,255,0.15))' }} />
+          <div style={{ height: 1, width: 50, background: 'linear-gradient(90deg, transparent, var(--accent-mid))' }} />
           <span style={{
             fontSize: '0.55rem', color: 'rgba(255,255,255,0.2)',
             letterSpacing: '0.35em', textTransform: 'uppercase', fontWeight: 400,
           }}>
             Secured by 4-Layer Neural Architecture
           </span>
-          <div style={{ height: 1, width: 50, background: 'linear-gradient(90deg, rgba(0,212,255,0.15), transparent)' }} />
+          <div style={{ height: 1, width: 50, background: 'linear-gradient(90deg, var(--accent-mid), transparent)' }} />
         </div>
       </motion.div>
     </div>

@@ -1,18 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --accent: #00e5ff;
-  --accent-dim: rgba(0, 229, 255, 0.08);
-  --accent-glow: rgba(0, 229, 255, 0.25);
-  --accent-mid: rgba(0, 229, 255, 0.15);
-  --accent-strong: rgba(0, 229, 255, 0.5);
+  --accent: #f5c542;
+  --accent-dim: rgba(245, 197, 66, 0.08);
+  --accent-glow: rgba(245, 197, 66, 0.25);
+  --accent-mid: rgba(245, 197, 66, 0.15);
+  --accent-strong: rgba(245, 197, 66, 0.5);
   --green: #00ff9d;
   --red: #ff3b5c;
   --orange: #ff9d00;
   --purple: #bf00ff;
   --surface: rgba(255, 255, 255, 0.02);
   --border: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(255, 157, 0, 0.3);
+  --border-hover: rgba(245, 197, 66, 0.3);
   --text-primary: #f0f2f5;
   --text-secondary: rgba(255, 255, 255, 0.5);
   --text-muted: rgba(255, 255, 255, 0.25);
@@ -609,9 +609,9 @@ body::before {
 
 .loading-bar {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--purple));
+  background: linear-gradient(90deg, #f5c542, #b08d26);
   border-radius: 2px;
-  box-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
+  box-shadow: 0 0 15px rgba(245, 197, 66, 0.3);
   transition: width 0.3s ease-out;
 }
 
@@ -633,11 +633,11 @@ body::before {
 }
 
 .loading-status-item.active {
-  color: var(--accent);
+  color: #f5c542;
 }
 
 .loading-status-item.done {
-  color: var(--green);
+  color: #b08d26;
 }
 
 .loading-status-dot {
@@ -650,13 +650,13 @@ body::before {
 }
 
 .loading-status-item.active .loading-status-dot {
-  background: var(--accent);
-  box-shadow: 0 0 8px var(--accent);
+  background: #f5c542;
+  box-shadow: 0 0 8px #f5c542;
 }
 
 .loading-status-item.done .loading-status-dot {
-  background: var(--green);
-  box-shadow: 0 0 8px var(--green);
+  background: #b08d26;
+  box-shadow: 0 0 8px rgba(176, 141, 38, 0.4);
 }
 
 /* =================== RESPONSIVE =================== */

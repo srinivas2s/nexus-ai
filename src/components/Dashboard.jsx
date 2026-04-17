@@ -75,10 +75,10 @@ export default function Dashboard({ user, onLogout }) {
 
   const layers = health?.layers || {};
   const layerList = [
-    { key: "L1_Ingestion", label: "L1 Ingest", color: "#00d4ff" },
-    { key: "L2_Detection", label: "L2 Detect", color: "#a855f7" },
-    { key: "L3_Correlation", label: "L3 Correlate", color: "#00ff88" },
-    { key: "L4_Output", label: "L4 Output", color: "#ff8c42" },
+    { key: "L1_Ingestion", label: "L1 Ingest", color: "#f5c542" },
+    { key: "L2_Detection", label: "L2 Detect", color: "#ffa600" },
+    { key: "L3_Correlation", label: "L3 Correlate", color: "#ff8400" },
+    { key: "L4_Output", label: "L4 Output", color: "#ff9d00" },
   ];
 
   return (
@@ -95,21 +95,20 @@ export default function Dashboard({ user, onLogout }) {
       }}>
         <div style={{ padding: '32px 24px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{
-            width: 52, height: 52,
-            border: '1px solid rgba(0,212,255,0.15)',
+            width: 72, height: 72,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            borderRadius: 14, marginBottom: 14,
-            background: 'rgba(0,212,255,0.02)',
-            animation: 'glow-border 3s ease-in-out infinite',
-            boxShadow: '0 0 20px rgba(0,212,255,0.04)',
+            marginBottom: 14,
+            transition: 'transform 0.3s',
           }}>
-            <img src="/icon.png" alt="Nexus AI" style={{ width: '60%', height: '60%', objectFit: 'contain' }} />
+            <img src="/icon.png" alt="Nexus AI" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
           </div>
           <span style={{
             fontFamily: 'Orbitron, sans-serif', fontWeight: 800,
-            fontSize: '1rem', color: '#ff8c42',
+            fontSize: '1rem',
             letterSpacing: '0.2em',
-            textShadow: '0 0 20px rgba(0,212,255,0.2)',
+            background: 'linear-gradient(to bottom, #f5c542, #b08d26)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
           }}>NEXUS.AI</span>
           <span style={{
             fontSize: '0.5rem', color: 'rgba(255,255,255,0.2)',
@@ -379,16 +378,16 @@ function OverviewTab({ stats, threats }) {
                 fontFamily: 'Orbitron, sans-serif',
               }}>Neural Threat Stream</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{
-                fontSize: '0.55rem', fontWeight: 600,
-                color: '#00ff88', letterSpacing: '0.1em', textTransform: 'uppercase',
-              }}>Live</span>
-              <div style={{
-                width: 6, height: 6, borderRadius: '50%',
-                background: '#00ff88', boxShadow: '0 0 8px #00ff88, 0 0 16px rgba(0,255,136,0.2)',
-              }} />
-            </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{
+                  fontSize: '0.55rem', fontWeight: 600,
+                  color: '#f5c542', letterSpacing: '0.1em', textTransform: 'uppercase',
+                }}>Live</span>
+                <div style={{
+                  width: 6, height: 6, borderRadius: '50%',
+                  background: '#f5c542', boxShadow: '0 0 8px #f5c542, 0 0 16px rgba(245, 197, 66, 0.2)',
+                }} />
+              </div>
           </div>
           <ThreatFeed threats={threats} />
         </div>

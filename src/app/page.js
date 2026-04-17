@@ -49,20 +49,11 @@ function LoadingScreen({ onComplete }) {
       }}
     >
       {/* Animated rings */}
-      <div className="loading-hex-container">
-        <div className="loading-hex-ring">
-          <div className="ring-dot" />
-        </div>
-        <div className="loading-hex-ring">
-          <div className="ring-dot" />
-        </div>
-        <div className="loading-hex-ring">
-          <div className="ring-dot" />
-        </div>
-        <img src="/icon.png" alt="Nexus AI" style={{ width: '80%', height: '80%', objectFit: 'contain' }} />
+      <div style={{ position: 'relative', width: 200, height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 40 }}>
+        <img src="/icon.png" alt="Nexus AI" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
       </div>
 
-      <div className="loading-title">NEXUS<span style={{ color: '#ff8c42' }}>.AI</span></div>
+      <div className="loading-title" style={{ background: 'linear-gradient(to bottom, #f5c542, #b08d26)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', textShadow: 'none' }}>NEXUS.AI</div>
       <div className="loading-subtitle">Advanced Threat Intelligence Platform</div>
 
       {/* Progress bar */}

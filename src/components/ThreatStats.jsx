@@ -3,7 +3,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis
 
 const tooltipStyle = {
   backgroundColor: 'rgba(0, 0, 0, 0.85)',
-  border: '1px solid rgba(0, 212, 255, 0.15)',
+  border: '1px solid var(--accent-mid)',
   borderRadius: 10,
   fontSize: '0.7rem',
   padding: '10px 14px',
@@ -24,7 +24,7 @@ export default function ThreatStats({ stats }) {
   const fp = stats?.false_positives || 0;
 
   const pieData = [
-    { name: 'Genuine', value: genuine || 1, color: '#00d4ff' },
+    { name: 'Genuine', value: genuine || 1, color: '#f5c542' },
     { name: 'False Positive', value: fp || 1, color: 'rgba(255,255,255,0.06)' },
   ];
 
@@ -32,7 +32,7 @@ export default function ThreatStats({ stats }) {
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 32 }}>
       <div style={{ flex: 1, minHeight: 200 }}>
         <p style={{
-          fontSize: '0.55rem', fontWeight: 700, color: '#00d4ff',
+          fontSize: '0.55rem', fontWeight: 700, color: '#f5c542',
           letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: 16,
           fontFamily: 'Orbitron, sans-serif',
         }}>Signal Distribution</p>
@@ -47,7 +47,7 @@ export default function ThreatStats({ stats }) {
             </Pie>
             <Tooltip
               contentStyle={tooltipStyle}
-              itemStyle={{ color: '#00d4ff' }}
+              itemStyle={{ color: '#f5c542' }}
             />
           </PieChart>
         </ResponsiveContainer>
@@ -57,7 +57,7 @@ export default function ThreatStats({ stats }) {
               <div style={{
                 width: 8, height: 8, borderRadius: 3,
                 background: d.color,
-                boxShadow: d.name === 'Genuine' ? '0 0 8px rgba(0,212,255,0.3)' : 'none',
+                boxShadow: d.name === 'Genuine' ? '0 0 8px rgba(245, 197, 66, 0.3)' : 'none',
               }} />
               <span style={{
                 fontSize: '0.58rem', color: 'rgba(255,255,255,0.35)',
@@ -70,7 +70,7 @@ export default function ThreatStats({ stats }) {
 
       <div style={{ flex: 1, minHeight: 200 }}>
         <p style={{
-          fontSize: '0.55rem', fontWeight: 700, color: '#00d4ff',
+          fontSize: '0.55rem', fontWeight: 700, color: '#f5c542',
           letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: 16,
           fontFamily: 'Orbitron, sans-serif',
         }}>Weekly Trend</p>
@@ -83,10 +83,10 @@ export default function ThreatStats({ stats }) {
             />
             <Tooltip
               contentStyle={tooltipStyle}
-              cursor={{ fill: 'rgba(0,212,255,0.02)' }}
+              cursor={{ fill: 'rgba(245, 197, 66, 0.02)' }}
             />
-            <Bar dataKey="genuine" stackId="a" fill="#00d4ff" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="fp" stackId="a" fill="rgba(0,212,255,0.08)" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="genuine" stackId="a" fill="#f5c542" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="fp" stackId="a" fill="rgba(245, 197, 66, 0.08)" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
