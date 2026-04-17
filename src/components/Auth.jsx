@@ -96,12 +96,12 @@ export default function Auth({ onLogin }) {
     setError('');
 
     try {
-      // MASTER BYPASS for Rapid Testing (1 / 1) - Skips all DB and Biometric checks
-      if (email === '1' && password === '1') {
+      // MASTER BYPASS for Rapid Testing (9 / 9) - Skips all DB and Biometric checks
+      if (email === '9' && password === '9') {
         setTimeout(() => {
-          setPhase(PHASE.NEURAL_SCAN);
+          onLogin({ email: '9', name: 'Nexus Operator' });
           setIsConnecting(false);
-        }, 800);
+        }, 500);
         return;
       }
 
