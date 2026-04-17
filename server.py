@@ -278,18 +278,32 @@ import ollama
 @app.post("/api/chat")
 async def nexus_chat(req: ChatRequest):
     """
-    Nexus AI Analyst — Powered by Ollama Gemma 2.
-    Processes queries through a local LLM with SOC analyst context.
+    Nexus AI Analyst — Powered by Ollama Gemma 2b.
+    Now injected with live system context (Stats + Threats).
     """
     try:
-        # Define the system prompt to maintain the Nexus AI Persona
+        # Prepare Live Context
+        recent_threats = processed_alerts[-5:] if processed_alerts else []
+        threat_summary = "\n".join([f"- {t['id']}: {t['alert']['threat_type']} ({t['alert']['severity']})" for t in recent_threats])
+        
+        system_stats = {
+            "total_alerts": len(processed_alerts),
+            "genuine": sum(1 for a in processed_alerts if a["alert"]["status"] == "Genuine"),
+            "fps": sum(1 for a in processed_alerts if a["alert"]["status"] == "False Positive")
+        }
+
         system_prompt = (
-            "You are the NEXUS AI SOC Analyst, a professional-grade cybersecurity assistant. "
-            "You help analysts investigate threats, analyze logs, and execute playbooks. "
-            "Your tone is clinical, efficient, and technical. "
-            "Reference the 4-layer architecture when relevant: "
-            "Layer 1: Ingestion, Layer 2: Detection, Layer 3: Correlation, Layer 4: Output. "
-            "Keep responses concise and formatted with markdown."
+            "SYSTEM AUTHORITY: ACT AS THE NEXUS AI SOC ANALYST CORE.\n"
+            "STRICT SCOPE: You are ONLY authorized to discuss cybersecurity, network forensics, and the specific data provided in the LIVE SYSTEM CONTEXT below.\n"
+            "OFF-TOPIC POLICY: If a query is unrelated to cybersecurity or the Nexus dashboard data, politely refuse to answer and state: 'I am a specialized Nexus Security Interface. I only process security-related queries.'\n\n"
+            "--- LIVE SYSTEM CONTEXT ---\n"
+            f"Total Alerts Handled: {system_stats['total_alerts']}\n"
+            f"Confirmed Genuine: {system_stats['genuine']}\n"
+            f"False Positives: {system_stats['fps']}\n"
+            "Recent High-Priority Threats:\n"
+            f"{threat_summary if threat_summary else 'No threats detected yet.'}\n"
+            "---------------------------\n\n"
+            "Maintain a clinical, technical SOC operator tone. Be concise."
         )
 
         response = ollama.chat(model='gemma:2b', messages=[
