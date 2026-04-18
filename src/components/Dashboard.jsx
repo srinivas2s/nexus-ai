@@ -395,19 +395,6 @@ function OverviewTab({ stats, threats }) {
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
-      <div style={{ textAlign: 'center', marginBottom: 48 }}>
-        <h1 style={{
-          fontFamily: 'Orbitron, sans-serif', fontWeight: 800,
-          fontSize: '2rem', color: '#fff', letterSpacing: '0.02em', marginBottom: 10,
-        }}>
-          AI-Driven <span style={{ color: 'var(--accent)', textShadow: '0 0 20px rgba(245,197,66,0.3)' }}>Threat Detection</span> & Simulation
-        </h1>
-        <p style={{
-          fontSize: '0.65rem', color: 'rgba(255,255,255,0.25)',
-          letterSpacing: '0.4em', textTransform: 'uppercase', fontWeight: 400,
-        }}>4-Layer Neural Architecture • Real-Time Processing</p>
-      </div>
-
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 32 }}>
         {statCards.map((s, i) => (
           <motion.div key={s.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.08 }} className="glass-card stat-card" style={{ padding: 24 }}>
