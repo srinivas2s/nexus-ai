@@ -6,6 +6,7 @@ Connects the 4-Layer Core ML System to the Next.js Frontend.
 import asyncio
 import time
 import random
+import math
 from fastapi import FastAPI
 import base64
 import os
@@ -45,6 +46,33 @@ explainer = ExplainabilityEngine()
 
 # In-memory store for processed alerts
 processed_alerts = []
+
+# Autonomous Worker
+async def neural_background_worker():
+    """Continuously processes background noise to populate genuine stats."""
+    while True:
+        try:
+            log = random.choice(SAMPLE_LOGS)
+            raw = dict(log)
+            fmt = raw.pop("fmt")
+            normalized = ingestor.normalize(raw, fmt)
+            prediction = detector.classify(normalized)
+            correlated = correlator.correlate(prediction, normalized)
+            final_alert = explainer.finalize_alert(correlated)
+            final_alert["id"] = f"TX-{9500 + len(processed_alerts)}"
+            final_alert["timestamp"] = time.strftime("%H:%M:%S")
+            final_alert["raw_source"] = fmt
+            processed_alerts.append(final_alert)
+            # Limit history
+            if len(processed_alerts) > 500:
+                processed_alerts.pop(0)
+        except Exception as e:
+            print(f"Neural Worker Error: {e}")
+        await asyncio.sleep(random.uniform(2, 6))
+
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(neural_background_worker())
 
 # ─── Simulated log sources for demo ───
 SAMPLE_LOGS = [
@@ -205,15 +233,20 @@ def health():
 @app.get("/api/stats")
 def get_stats():
     """Returns live system statistics mapped to each layer."""
-    genuine = sum(1 for a in processed_alerts if a["alert"]["status"] == "Genuine")
-    fp = sum(1 for a in processed_alerts if a["alert"]["status"] == "False Positive")
+    genuine = sum(1 for a in processed_alerts if a.get("alert", {}).get("status") == "Genuine")
+    fp = sum(1 for a in processed_alerts if a.get("alert", {}).get("status") == "False Positive")
+    
+    # Base + Fluctuation for realistic feel
+    t_base = 812.4
+    t_fluct = math.sin(time.time() / 10) * 8.5
+    
     return {
-        "throughput": f"{random.uniform(800, 900):.1f} TB",
-        "anomaly_count": len(processed_alerts),
-        "genuine_threats": genuine,
-        "false_positives": fp,
-        "events_per_sec": random.randint(480, 560),
-        "total_processed": len(processed_alerts),
+        "throughput": f"{(t_base + t_fluct):.1f} TB",
+        "events_per_sec": int(500 + math.sin(time.time() / 5) * 60),
+        "anomaly_count": 80 + len(processed_alerts),
+        "genuine_threats": 60 + genuine,
+        "false_positives": 20 + fp,
+        "total_processed": 80 + len(processed_alerts),
     }
 
 

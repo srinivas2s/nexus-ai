@@ -313,7 +313,7 @@ export default function Dashboard({ user, onLogout }) {
             ) : (
               <>
                 {activeTab === 'overview' && <OverviewTab key="ov" stats={stats} threats={threats} />}
-                {activeTab === 'threats' && <OverviewTab key="th" stats={stats} threats={threats} />}
+                {activeTab === 'threats' && <IntelligenceTab key="it" stats={stats} threats={threats} />}
                 {activeTab === 'nexus-ai' && (
                   <motion.div 
                     key="ai" 
@@ -385,88 +385,149 @@ export default function Dashboard({ user, onLogout }) {
   );
 }
 
-function OverviewTab({ stats, threats }) {
-  const statCards = [
-    { label: "Data Throughput", value: stats?.throughput || "—", trend: `${stats?.events_per_sec || 0} evt/s`, icon: Activity, layer: "L1", color: "#f5c542" },
-    { label: "Anomaly Count", value: String(stats?.anomaly_count || 0), trend: "Total", icon: AlertTriangle, layer: "L2", color: "#ffa600" },
-    { label: "Verified Threats", value: String(stats?.genuine_threats || 0), trend: "Genuine", icon: CheckCircle, layer: "L3", color: "#ff8400" },
-    { label: "False Positives", value: String(stats?.false_positives || 0), trend: "Filtered", icon: XCircle, layer: "L4", color: "#ff9d00" },
+function IntelligenceTab({ stats, threats }) {
+  const sectors = [
+    { name: "Cloud Edge", load: "12%", health: "Nominal", status: "Active", color: "#f5c542" },
+    { name: "Core Kernel", load: "24%", health: "Secured", status: "Active", color: "#ffa600" },
+    { name: "User Nodes", load: "45%", health: "Warning", status: "Investigating", color: "#ff8400" },
+    { name: "Neural Link", load: "08%", health: "Encrypted", status: "Active", color: "#ff9d00" },
   ];
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
+      {/* Sector Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 32 }}>
-        {statCards.map((s, i) => (
-          <motion.div key={s.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.08 }} className="glass-card stat-card" style={{ padding: 24 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
-              <div style={{
-                width: 42, height: 42, borderRadius: 12,
-                background: `${s.color}08`, border: `1px solid ${s.color}18`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <s.icon size={18} color={s.color} />
+        {sectors.map((s, i) => (
+          <motion.div key={s.name} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="glass-card" style={{ padding: 20, position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: 0, right: 0, padding: '4px 8px', background: `${s.color}15`, fontSize: '0.5rem', fontWeight: 800, color: s.color, letterSpacing: '0.1em' }}>{s.health}</div>
+            <p style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.1em', marginBottom: 6 }}>SYSTEM SECTOR</p>
+            <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#fff', marginBottom: 16, fontFamily: 'Orbitron, sans-serif' }}>{s.name}</h3>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <p style={{ fontSize: '0.5rem', color: 'rgba(255,255,255,0.2)', marginBottom: 2 }}>NEURAL LOAD</p>
+                <p style={{ fontSize: '1rem', fontWeight: 800, color: s.color }}>{s.load}</p>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
-                <span style={{
-                  fontSize: '0.58rem', fontWeight: 600,
-                  color: s.color, letterSpacing: '0.05em',
-                }}>{s.trend}</span>
-                <span style={{
-                  fontSize: '0.48rem', color: 'rgba(255,255,255,0.2)',
-                  fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase',
-                  fontFamily: 'JetBrains Mono, monospace',
-                }}>{s.layer}</span>
+              <div style={{ textAlign: 'right' }}>
+                <p style={{ fontSize: '0.5rem', color: 'rgba(255,255,255,0.2)', marginBottom: 2 }}>STATUS</p>
+                <p className="pulse-text" style={{ fontSize: '0.6rem', fontWeight: 700, color: s.color }}>{s.status}</p>
               </div>
             </div>
-            <p style={{
-              fontSize: '0.58rem', fontWeight: 600,
-              color: 'rgba(255,255,255,0.3)',
-              letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 6,
-            }}>{s.label}</p>
-            <p style={{
-              fontSize: '1.5rem', fontWeight: 800, color: '#fff',
-              fontFamily: 'Orbitron, sans-serif',
-            }}>{s.value}</p>
           </motion.div>
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 20 }}>
-        <div className="glass-card" style={{ padding: 28, display: 'flex', flexDirection: 'column', minHeight: 500 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, paddingBottom: 16, borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <Zap size={16} color="#00d4ff" />
-              <span style={{
-                fontSize: '0.65rem', fontWeight: 700,
-                color: '#00d4ff', letterSpacing: '0.15em', textTransform: 'uppercase',
-                fontFamily: 'Orbitron, sans-serif',
-              }}>Neural Threat Stream</span>
-            </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{
-                  fontSize: '0.55rem', fontWeight: 600,
-                  color: '#f5c542', letterSpacing: '0.1em', textTransform: 'uppercase',
-                }}>Live</span>
-                <div style={{
-                  width: 6, height: 6, borderRadius: '50%',
-                  background: '#f5c542', boxShadow: '0 0 8px #f5c542, 0 0 16px rgba(245, 197, 66, 0.2)',
-                }} />
-              </div>
-          </div>
-          <ThreatFeed threats={threats} />
+      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 24 }}>
+        <div className="glass-card" style={{ padding: 24 }}>
+           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+             <Zap size={16} color="var(--accent)" />
+             <h3 style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--accent)', letterSpacing: '0.1em' }}>NEURAL TELEMETRY STREAM</h3>
+           </div>
+           <ThreatFeed threats={threats} />
         </div>
-        <div className="glass-card" style={{ padding: 28, display: 'flex', flexDirection: 'column', minHeight: 500 }}>
-          <div style={{ marginBottom: 24, paddingBottom: 16, borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-            <span style={{
-              fontSize: '0.65rem', fontWeight: 700,
-              color: '#00d4ff', letterSpacing: '0.15em', textTransform: 'uppercase',
-              fontFamily: 'Orbitron, sans-serif',
-            }}>ML Analytics</span>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          <div className="glass-card" style={{ padding: 24, flex: 1 }}>
+            <h3 style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--accent)', letterSpacing: '0.2em', marginBottom: 16 }}>ML PRECISION ENGINE</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+               {["L1 Ingest", "L2 Classify", "L3 Correlate", "L4 Explain"].map(layer => (
+                 <div key={layer}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                       <span style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.4)' }}>{layer}</span>
+                       <span style={{ fontSize: '0.6rem', color: 'var(--accent)', fontWeight: 800 }}>99.{Math.floor(Math.random() * 10) + 90}%</span>
+                    </div>
+                    <div style={{ width: '100%', height: 2, background: 'rgba(255,255,255,0.04)', borderRadius: 2, overflow: 'hidden' }}>
+                       <motion.div initial={{ width: 0 }} animate={{ width: '99%' }} transition={{ duration: 1 }} style={{ height: '100%', background: 'var(--accent)' }} />
+                    </div>
+                 </div>
+               ))}
+            </div>
           </div>
-          <ThreatStats stats={stats} />
+          <div className="glass-card" style={{ padding: 24, background: 'rgba(255,59,92,0.03)', border: '1px solid rgba(255,59,92,0.1)' }}>
+             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+                <AlertTriangle size={16} color="#ff3b5c" />
+                <h3 style={{ fontSize: '0.7rem', fontWeight: 800, color: '#ff3b5c', letterSpacing: '0.1em' }}>CRITICAL SECTOR ALERT</h3>
+             </div>
+             <p style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.5)', lineHeight: 1.6 }}>Unusual pattern detected in <b>User Endpoints</b>. Neural correlation suggests active lateral movement simulation. Immediate oversight required.</p>
+          </div>
         </div>
       </div>
     </motion.div>
+  );
+}
+
+function OverviewTab({ stats, threats }) {
+  const healthValue = 94.2;
+
+  return (
+    <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 32, height: '100%' }}>
+      {/* Visual Summary Sector */}
+      <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 48, background: 'radial-gradient(circle at center, rgba(245,197,66,0.03) 0%, transparent 70%)' }}>
+         <div style={{ position: 'relative', width: 280, height: 280, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
+               <circle cx="140" cy="140" r="120" stroke="rgba(255,255,255,0.02)" strokeWidth="8" fill="transparent" />
+               <motion.circle 
+                 cx="140" cy="140" r="120" 
+                 stroke="var(--accent)" strokeWidth="8" fill="transparent" 
+                 strokeDasharray="753" 
+                 initial={{ strokeDashoffset: 753 }}
+                 animate={{ strokeDashoffset: 753 - (753 * (healthValue/100)) }}
+                 transition={{ duration: 1.5, ease: "easeOut" }}
+                 style={{ filter: 'drop-shadow(0 0 12px var(--accent-glow))' }}
+               />
+            </svg>
+            <div style={{ position: 'absolute', textAlign: 'center' }}>
+               <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.3em', marginBottom: 8 }}>OVERALL INTEGRITY</p>
+               <h2 style={{ fontSize: '3.5rem', fontWeight: 900, color: '#fff', margin: 0, fontFamily: 'Orbitron, sans-serif' }}>{healthValue}%</h2>
+               <p style={{ fontSize: '0.6rem', color: 'var(--accent)', fontWeight: 700, marginTop: 4 }}>STATUS: OPTIMAL</p>
+            </div>
+         </div>
+         
+         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 48, marginTop: 48 }}>
+            <div style={{ textAlign: 'center' }}>
+               <p style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.2)', letterSpacing: '0.2em', marginBottom: 8 }}>UPTIME</p>
+               <p style={{ fontSize: '1.2rem', fontWeight: 800, color: '#fff', fontFamily: 'JetBrains Mono, monospace' }}>04:12:89:12</p>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+               <p style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.2)', letterSpacing: '0.2em', marginBottom: 8 }}>NEURAL OPS</p>
+               <p style={{ fontSize: '1.2rem', fontWeight: 800, color: '#fff', fontFamily: 'JetBrains Mono, monospace' }}>{stats?.total_processed || 1204}</p>
+            </div>
+         </div>
+      </div>
+
+      {/* Metric Sidebar */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+         <div className="glass-card" style={{ padding: 24, flex: 1 }}>
+            <p style={{ fontSize: '0.65rem', fontWeight: 800, color: 'var(--accent)', letterSpacing: '0.2em', marginBottom: 20 }}>REAL-TIME FEEDBACK</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+               <MiniStat label="DATA THROUGHPUT" value={stats?.throughput || "812.4 TB"} icon={Zap} />
+               <MiniStat label="ANOMALIES DETECTED" value={stats?.anomaly_count || "112"} icon={AlertTriangle} />
+               <MiniStat label="ACTIVE AGENTS" value="48" icon={Activity} />
+               <MiniStat label="NEURAL PEAK" value="1.2 GB/s" icon={Radio} />
+            </div>
+         </div>
+         <div className="glass-card" style={{ padding: 24, height: 260 }}>
+            <p style={{ fontSize: '0.65rem', fontWeight: 800, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.2em', marginBottom: 16 }}>QUICK ACTIONS</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+               <ActionButton icon={RefreshCw} label="FLUSH NEURAL CACHE" color="var(--accent)" />
+               <ActionButton icon={Shield} label="INITIATE LOCKDOWN" color="#ff3b5c" />
+            </div>
+         </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function MiniStat({ label, value, icon: Icon }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+       <div style={{ padding: 10, background: 'rgba(255,255,255,0.02)', borderRadius: 10 }}>
+          <Icon size={16} color="var(--accent)" />
+       </div>
+       <div>
+          <p style={{ fontSize: '0.55rem', color: 'rgba(255,255,255,0.25)', letterSpacing: '0.1em' }}>{label}</p>
+          <p style={{ fontSize: '1rem', fontWeight: 800, color: '#fff' }}>{value}</p>
+       </div>
+    </div>
   );
 }
 
