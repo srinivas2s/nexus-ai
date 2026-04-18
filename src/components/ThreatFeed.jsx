@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 const sevClass = { Critical: 'badge-critical', High: 'badge-high', Medium: 'badge-high', Low: 'badge-low', Info: 'badge-info' };
 
-export default function ThreatFeed({ threats = [] }) {
+export default function ThreatFeed({ threats = [], onSelect }) {
 
   if (threats.length === 0) {
     return (
@@ -41,8 +41,9 @@ export default function ThreatFeed({ threats = [] }) {
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.04 }}
+            onClick={() => onSelect && onSelect(t)}
             className="threat-row"
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: onSelect ? 'pointer' : 'default' }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
               <div style={{
