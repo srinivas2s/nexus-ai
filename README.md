@@ -104,4 +104,3 @@ NEXUS.AI splits its intelligence into four distinct modules:
 4. **Explainability Module**: Generates human-readable summaries and defensive playbooks.
 
 ---
-<p align="center">Built with ⚡ by Antigravity AI</p>
