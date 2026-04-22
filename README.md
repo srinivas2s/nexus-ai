@@ -62,7 +62,7 @@ To access the command center, operators must undergo a **Neural Biometric Sync**
 ---
 <div align="center">
   <sub>SECURED BY NEXUS NEURAL ARCHITECTURE v2.0</sub>
-</div>
+</div> 
 
 ## 🛠️ Technology Stack
 
